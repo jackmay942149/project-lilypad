@@ -36,6 +36,7 @@ ocean := engine.Entity {
 	tag = .Ocean,
 	update = scripts.ocean_update,
 
+	moss_regrow_rate = 0.0005,
 	moss_removal_distance = 0.05,
 }
 
@@ -49,7 +50,7 @@ main :: proc() {
 	}
 
 	window := engine.init_window(app_info)
-	boat.window = window
+	engine.input_init(window.handle)
 
 	engine.register_mesh(&boat_mesh)
 	engine.register_mesh(&ocean_mesh)
@@ -58,8 +59,11 @@ main :: proc() {
 		entities = {ocean, boat},
 	}
 
-	ocean.mesh.texture_ids.y = engine.texture_load("./assets/textures/moss/DIFF_MossColour01.JPG",  1, window.gl_ctx.shader_program)
-	ocean.mesh.texture_ids.x = engine.texture_load("./assets/textures/water/MASK_Water_02.JPG",  0, window.gl_ctx.shader_program)
+	ocean.mesh.material.shader_program = engine.material_load("./assets/shaders/default.vert", "./assets/shaders/ocean.frag")
+	boat.mesh.material.shader_program = engine.material_load("./assets/shaders/default.vert", "./assets/shaders/boat.frag")
+
+	ocean.mesh.material.texture_ids.x = engine.texture_load("./assets/textures/moss/DIFF_MossColour01.JPG",  1, ocean.mesh.material.shader_program)
+	ocean.mesh.material.texture_ids.y = engine.texture_load("./assets/textures/water/MASK_Water_02.JPG",  0, ocean.mesh.material.shader_program)
 
 	for !engine.window_should_close(window) {
 		engine.render(window, scene)

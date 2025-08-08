@@ -10,6 +10,7 @@ Entity :: struct {
 
 	// Ocean variables
 	boat_pos:              [2]f32,
+	moss_regrow_rate:      f32,
 	moss_removal_distance: f32,
 
 	// Boat variables

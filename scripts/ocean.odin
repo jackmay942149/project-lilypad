@@ -11,7 +11,7 @@ ocean_update :: proc(scene: ^engine.Scene, ocean: ^engine.Entity) {
 	}
 	for &v in ocean.mesh.vertices {
 		amount := v.color.r
-		amount += 0.0001
+		amount += ocean.moss_regrow_rate
 		amount = min(amount, 1.0)
 		if la.distance(v.position.xy, ocean.boat_pos) < ocean.moss_removal_distance {
 			amount = 0

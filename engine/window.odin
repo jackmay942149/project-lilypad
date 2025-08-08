@@ -5,13 +5,7 @@ import gl "vendor:OpenGL"
 
 Window :: struct {
 	handle    : glfw.WindowHandle,
-	gl_ctx: OpenGL_Context,
 }
-
-OpenGL_Context :: struct {
-	shader_program: u32,
-}
-
 
 @(require_results)
 init_window :: proc(app_info: Application_Info) -> (window: Window) {
@@ -29,15 +23,6 @@ init_window :: proc(app_info: Application_Info) -> (window: Window) {
 	glfw.MakeContextCurrent(window.handle)
 	gl.load_up_to(app_info.gl_major_version, app_info.gl_minor_version, glfw.gl_set_proc_address)
 
-	ok: bool
-	window.gl_ctx.shader_program, ok = gl.load_shaders_file(
-		"assets/shaders/default.vert",
-		"assets/shaders/default.frag",
-	)
-	if !ok {
-		topic_warn(.Engine, "Failed to compile shaders")
-	}
-
 	return window
 }
 
@@ -51,19 +36,19 @@ render :: proc(window: Window, scene: Scene) {
 	gl.ClearColor(0.5, 0.0, 1.0, 1.0)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 
-	gl.UseProgram(window.gl_ctx.shader_program)
 	for e in scene.entities {
-		gl.BindVertexArray(e.mesh.vao)
+		gl.UseProgram(e.mesh.material.shader_program)
+		gl.BindVertexArray(e.mesh.material.vao)
 		// Set 2D position
-		pos_location := gl.GetUniformLocation(window.gl_ctx.shader_program, "u_pos")
+		pos_location := gl.GetUniformLocation(e.mesh.material.shader_program, "u_pos")
 		gl.Uniform2f(pos_location, e.position.x, e.position.y)
 
 		// Set texture
-		if e.mesh.texture_ids[0] != 0 {
+		if e.mesh.material.texture_ids[0] != 0 {
 			gl.ActiveTexture(gl.TEXTURE0)
-			gl.BindTexture(gl.TEXTURE_2D, e.mesh.texture_ids.x)		
+			gl.BindTexture(gl.TEXTURE_2D, e.mesh.material.texture_ids.x)		
 			gl.ActiveTexture(gl.TEXTURE1)
-			gl.BindTexture(gl.TEXTURE_2D, e.mesh.texture_ids.y)		
+			gl.BindTexture(gl.TEXTURE_2D, e.mesh.material.texture_ids.y)		
 		}
 
 		if e.mesh.streamed {

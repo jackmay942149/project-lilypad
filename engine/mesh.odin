@@ -5,12 +5,11 @@ import fbx "./deps/ufbx"
 import gl "vendor:OpenGL"
 
 Mesh :: struct {
-	registered : bool,
-	streamed   : bool,
-	vao        : u32,
-	texture_ids: [2]u32,
-	vertices   : []Vertex,
-	indicies   : []u32,
+	registered: bool,
+	streamed:   bool,
+	vertices:   []Vertex,
+	indicies:   []u32,
+	material:   Material,
 }
 
 Vertex :: struct {
@@ -71,10 +70,10 @@ register_mesh :: proc(mesh: ^Mesh, streamed := false) {
 	}
 
 	vbo, ebo: u32 
-	gl.GenVertexArrays(1, &mesh.vao)
+	gl.GenVertexArrays(1, &mesh.material.vao)
 	gl.GenBuffers(1, &vbo)
 	gl.GenBuffers(1, &ebo)
-	gl.BindVertexArray(mesh.vao)
+	gl.BindVertexArray(mesh.material.vao)
 
 	if (!streamed) {
 		gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
