@@ -8,6 +8,7 @@ Mesh :: struct {
 	registered: bool,
 	streamed  : bool,
 	vao       : u32,
+	texture_id: u32,
 	vertices  : []Vertex,
 	indicies  : []u32,
 }
@@ -15,6 +16,7 @@ Mesh :: struct {
 Vertex :: struct {
 	position: [3]f32,
 	color   : [4]f32,
+	coords  : [2]f32,
 }
 
 load_mesh :: proc(mesh_filepath: cstring) -> (mesh: Mesh) {
@@ -90,6 +92,8 @@ register_mesh :: proc(mesh: ^Mesh, streamed := false) {
 	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, size_of(Vertex), offset_of(Vertex, position))
 	gl.EnableVertexAttribArray(1)
 	gl.VertexAttribPointer(1, 4, gl.FLOAT, false, size_of(Vertex), offset_of(Vertex, color))
+	gl.EnableVertexAttribArray(2)
+	gl.VertexAttribPointer(2, 2, gl.FLOAT, false, size_of(Vertex), offset_of(Vertex, coords))
 	gl.BindVertexArray(0)
 
 	mesh.registered = true

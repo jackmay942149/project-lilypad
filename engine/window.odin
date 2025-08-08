@@ -54,8 +54,14 @@ render :: proc(window: Window, scene: Scene) {
 	gl.UseProgram(window.gl_ctx.shader_program)
 	for e in scene.entities {
 		gl.BindVertexArray(e.mesh.vao)
+		// Set 2D position
 		pos_location := gl.GetUniformLocation(window.gl_ctx.shader_program, "u_pos")
 		gl.Uniform2f(pos_location, e.position.x, e.position.y)
+
+		// Set texture
+		if e.mesh.texture_id != 0 {
+			gl.BindTexture(gl.TEXTURE_2D, e.mesh.texture_id)		
+		}
 
 		if e.mesh.streamed {
 			gl.BufferSubData(gl.ARRAY_BUFFER, 0, size_of(Vertex) * len(e.mesh.vertices), raw_data(e.mesh.vertices[:]))
