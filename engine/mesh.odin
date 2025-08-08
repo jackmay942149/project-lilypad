@@ -1,5 +1,7 @@
 package engine
 
+import "core:fmt"
+import fbx "./deps/ufbx"
 import gl "vendor:OpenGL"
 
 Mesh :: struct {
@@ -13,6 +15,51 @@ Mesh :: struct {
 Vertex :: struct {
 	position: [3]f32,
 	color   : [4]f32,
+}
+
+load_mesh :: proc(mesh_filepath: cstring) -> (mesh: Mesh) {
+	opts := fbx.Load_Opts{}
+  err := fbx.Error{}
+  scene := fbx.load_file(mesh_filepath, &opts, &err)
+  if scene == nil {
+    fmt.printf("%s\n", err.description.data)
+    panic("Failed to load")
+  }
+
+  // Retrieve the first mesh
+  fbx_mesh: ^fbx.Mesh
+  for i in 0 ..< scene.nodes.count {
+    node := scene.nodes.data[i]
+    if node.is_root || node.mesh == nil { continue }
+    fbx_mesh = node.mesh
+    break
+  }
+
+  // Unpack / triangulate the index data
+  index_count := 3 * fbx_mesh.num_triangles
+  mesh.indicies = make([]u32, index_count)
+  off := u32(0)
+  for i in 0 ..< fbx_mesh.faces.count {
+    face := fbx_mesh.faces.data[i]
+    tris := fbx.catch_triangulate_face(nil, &mesh.indicies[off], uint(index_count), fbx_mesh, face)
+    off += 3 * tris
+  }
+
+  // Unpack the vertex data
+  vertex_count := fbx_mesh.num_indices
+  positions := make([][3]f32, vertex_count)
+  mesh.vertices = make([]Vertex, vertex_count)
+
+  for i in 0..< vertex_count {
+    pos := fbx_mesh.vertex_position.values.data[fbx_mesh.vertex_position.indices.data[i]]
+    positions[i] = {f32(pos.x)/10.0, f32(pos.z)/10.0, f32(pos.y)/10.0}
+    mesh.vertices[i] = Vertex{position = positions[i], color = {1.0, 1.0, 1.0, 1.0}}
+  }
+
+  // Free the fbx data
+  fbx.free_scene(scene)
+
+  return mesh
 }
 
 register_mesh :: proc(mesh: ^Mesh, streamed := false) {

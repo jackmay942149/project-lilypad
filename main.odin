@@ -1,8 +1,7 @@
 package main
 
-import la "core:math/linalg"
-
 import "./engine"
+import "./scripts"
 
 app_info :: engine.Application_Info {
 	name = "Project Lilypad",
@@ -22,15 +21,22 @@ boat_mesh := engine.Mesh {
 	indicies = {0, 1, 2}
 }
 ocean_mesh := engine.ocean
+hex_mesh := engine.load_mesh("./assets/models/SM_HexGrid_01.fbx")
 
 // Entities
-boat1 := engine.Entity {
+boat := engine.Entity {
 	position = {0.0, 0.0},
 	mesh = &boat_mesh,
+	tag = .Boat,
+	update = scripts.boat_update,
 }
 ocean := engine.Entity {
 	position = {0.0, 0.0},
 	mesh = &ocean_mesh,
+	tag = .Ocean,
+	update = scripts.ocean_update,
+
+	moss_removal_distance = 0.05,
 }
 
 main :: proc() {
@@ -43,40 +49,18 @@ main :: proc() {
 	}
 
 	window := engine.init_window(app_info)
+	boat.window = window
 
 	engine.register_mesh(&boat_mesh)
 	engine.register_mesh(&ocean_mesh)
 
 	scene := engine.Scene {
-		entities = {&ocean, &boat1,},
+		entities = {ocean, boat},
 	}
-	
-	ocean.mesh.vertices[0].color = {0.0, 0.0, 0.0, 1.0}
 
 	for !engine.window_should_close(window) {
 		engine.render(window, scene)
-		for &v in ocean.mesh.vertices {
-			amount := v.color.r
-			amount += 0.0001
-			amount = min(amount, 1.0)
-			if la.distance(v.position.xy, boat1.position) < 0.1 {
-				amount = 0
-			}
-			v.color = {amount, amount, amount, 1.0}
-		}
-
-		if engine.is_key_down(window, .W) {
-			boat1.position.y += 0.001
-		}
-		if engine.is_key_down(window, .S) {
-			boat1.position.y -= 0.001
-		}
-		if engine.is_key_down(window, .A) {
-			boat1.position.x -= 0.001
-		}
-		if engine.is_key_down(window, .D) {
-			boat1.position.x += 0.001
-		}
+		engine.update_components(&scene)
 	}
 
 }
