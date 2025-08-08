@@ -5,12 +5,12 @@ import fbx "./deps/ufbx"
 import gl "vendor:OpenGL"
 
 Mesh :: struct {
-	registered: bool,
-	streamed  : bool,
-	vao       : u32,
-	texture_id: u32,
-	vertices  : []Vertex,
-	indicies  : []u32,
+	registered : bool,
+	streamed   : bool,
+	vao        : u32,
+	texture_ids: [2]u32,
+	vertices   : []Vertex,
+	indicies   : []u32,
 }
 
 Vertex :: struct {

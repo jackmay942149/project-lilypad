@@ -5,9 +5,10 @@ in vec2 v_coord;
 
 out vec4 o_color;
 
-uniform sampler2D u_texture;
+uniform sampler2D u_texture_1;
+uniform sampler2D u_texture_2;
 
 void main()
 {
-    o_color = texture(u_texture, v_coord) * v_color;
+    o_color = texture(u_texture_1, v_coord) + texture(u_texture_2, v_coord);
 }

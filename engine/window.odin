@@ -59,8 +59,11 @@ render :: proc(window: Window, scene: Scene) {
 		gl.Uniform2f(pos_location, e.position.x, e.position.y)
 
 		// Set texture
-		if e.mesh.texture_id != 0 {
-			gl.BindTexture(gl.TEXTURE_2D, e.mesh.texture_id)		
+		if e.mesh.texture_ids[0] != 0 {
+			gl.ActiveTexture(gl.TEXTURE0)
+			gl.BindTexture(gl.TEXTURE_2D, e.mesh.texture_ids.x)		
+			gl.ActiveTexture(gl.TEXTURE1)
+			gl.BindTexture(gl.TEXTURE_2D, e.mesh.texture_ids.y)		
 		}
 
 		if e.mesh.streamed {

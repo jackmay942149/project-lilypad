@@ -58,7 +58,8 @@ main :: proc() {
 		entities = {ocean, boat},
 	}
 
-	ocean_mesh.texture_id = engine.texture_load("./assets/textures/moss/DIFF_MossColour01.JPG")
+	ocean.mesh.texture_ids.y = engine.texture_load("./assets/textures/moss/DIFF_MossColour01.JPG",  1, window.gl_ctx.shader_program)
+	ocean.mesh.texture_ids.x = engine.texture_load("./assets/textures/water/MASK_Water_02.JPG",  0, window.gl_ctx.shader_program)
 
 	for !engine.window_should_close(window) {
 		engine.render(window, scene)
