@@ -3,13 +3,13 @@ package engine
 import "base:runtime"
 import "vendor:glfw"
 
-Key :: struct {
-	code:     Key_Code,
-	modifier: Key_Modifiers,
-	action:   Key_Action,
+Input_Key :: struct {
+	code:     Input_Key_Code,
+	modifier: Input_Key_Modifiers,
+	action:   Input_Key_Action,
 }
 
-Axis :: enum {
+Input_Axis :: enum {
 	Left_X    = glfw.GAMEPAD_AXIS_LEFT_X,
 	Left_Y    = glfw.GAMEPAD_AXIS_LEFT_Y,
 	Right_X   = glfw.GAMEPAD_AXIS_RIGHT_X,
@@ -19,12 +19,12 @@ Axis :: enum {
 }
 
 Mapping_Context :: struct {
-	toggles: map[Key]Toggle,
-	binds:   map[Key]proc(),
+	toggles: map[Input_Key]Input_Toggle,
+	binds:   map[Input_Key]proc(),
 }
 
 @(private)
-Key_Code :: enum i32 {
+Input_Key_Code :: enum i32 {
 	A             = glfw.KEY_A,
 	B             = glfw.KEY_B,
 	C             = glfw.KEY_C,
@@ -122,23 +122,23 @@ Key_Code :: enum i32 {
 }
 
 @(private)
-Modifier :: enum i32 {
+Input_Modifier :: enum i32 {
 	Shift,
 	Ctrl,
 	Alt,
 }
 @(private)
-Key_Modifiers :: bit_set[Modifier;i32]
+Input_Key_Modifiers :: bit_set[Input_Modifier;i32]
 
 @(private)
-Key_Action :: enum i32 {
+Input_Key_Action :: enum i32 {
 	Release = glfw.RELEASE,
 	Press   = glfw.PRESS,
 	Repeat  = glfw.REPEAT,
 }
 
 @(private)
-Toggle :: struct {
+Input_Toggle :: struct {
 	first:  proc(),
 	second: proc(),
 }
@@ -149,31 +149,31 @@ Input_Context :: struct {
 	window:         glfw.WindowHandle,
 	global_map:     Mapping_Context,
 	current_map:    ^Mapping_Context,
-	gamepad_states: [glfw.JOYSTICK_LAST]Gamepad_Info,
-	key_states:     [glfw.KEY_LAST + 1]Key_Info,
-	mouse_state:    Mouse_Info,
+	gamepad_states: [glfw.JOYSTICK_LAST]Input_Gamepad_Info,
+	key_states:     [glfw.KEY_LAST + 1]Input_Key_Info,
+	mouse_state:    Input_Mouse_Info,
 	initialised:    bool,
 }
 
 @(private)
-Mouse_Info :: struct {
-	prev: Mouse_State,
-	curr: Mouse_State,
+Input_Mouse_Info :: struct {
+	prev: Input_Mouse_State,
+	curr: Input_Mouse_State,
 }
 
 @(private)
-Mouse_State :: struct {
+Input_Mouse_State :: struct {
 	pos: [2]f64,
 }
 
 @(private)
-Key_Info :: struct {
-	code:   Key_Code,
+Input_Key_Info :: struct {
+	code:   Input_Key_Code,
 	isDown: bool,
 }
 
 @(private)
-Gamepad_Info :: struct {
+Input_Gamepad_Info :: struct {
 	prev_state:  glfw.GamepadState,
 	state:       glfw.GamepadState,
 	is_gamepad:  bool,

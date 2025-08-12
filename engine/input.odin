@@ -17,8 +17,8 @@ input_init :: proc(window: glfw.WindowHandle) {
 	assert(window != nil)
 	assert(!input_ctx.initialised)
 	input_ctx.odin_ctx = context
-	input_ctx.global_map.binds = make(map[Key]proc())
-	input_ctx.global_map.toggles = make(map[Key]Toggle)
+	input_ctx.global_map.binds = make(map[Input_Key]proc())
+	input_ctx.global_map.toggles = make(map[Input_Key]Input_Toggle)
 	input_ctx.window = window
 	glfw.SetKeyCallback(window, key_callback)
 	init_gamepads()
@@ -32,8 +32,8 @@ init_mapping_ctx :: proc(window: glfw.WindowHandle) -> Mapping_Context {
 	assert(window != nil)
 	assert(input_ctx.initialised)
 	ctx := Mapping_Context {
-		binds   = make(map[Key]proc()),
-		toggles = make(map[Key]Toggle),
+		binds   = make(map[Input_Key]proc()),
+		toggles = make(map[Input_Key]Input_Toggle),
 	}
 	return ctx
 }
@@ -52,11 +52,11 @@ bind_mapping_ctx :: proc(ctx: ^Mapping_Context) {
 	input_ctx.current_map = ctx
 }
 
-is_key_down :: proc(key: Key) -> bool {
+is_key_down :: proc(key: Input_Key) -> bool {
 	return input_ctx.key_states[key.code].isDown
 }
 
-get_axis :: proc(axis: Axis) -> f32 {
+get_axis :: proc(axis: Input_Axis) -> f32 {
 	for g, i in input_ctx.gamepad_states {
 		if g.initialised {
 			return g.state.axes[axis]
@@ -65,7 +65,7 @@ get_axis :: proc(axis: Axis) -> f32 {
 	return 0
 }
 
-get_axis_delta :: proc(axis: Axis) -> f32 {
+get_axis_delta :: proc(axis: Input_Axis) -> f32 {
 	for g, i in input_ctx.gamepad_states {
 		if g.initialised {
 			return g.state.axes[axis] - g.prev_state.axes[axis]
@@ -100,7 +100,7 @@ capture_cursor :: proc() {
 	glfw.SetInputMode(input_ctx.window, glfw.CURSOR, glfw.CURSOR_CAPTURED)
 }
 
-inject_key :: proc(key: Key) {
+inject_key :: proc(key: Input_Key) {
 	input_callback(i32(key.code), i32(key.action), transmute(i32)key.modifier)
 }
 
@@ -165,10 +165,10 @@ key_callback :: proc "c" (
 @(private)
 input_callback :: proc(key_code, action, mods: i32) { 	// TODO: Change this to accept a key
 	if action != glfw.REPEAT do input_ctx.key_states[key_code].isDown = !input_ctx.key_states[key_code].isDown
-	key := Key {
-		code     = transmute(Key_Code)key_code,
-		modifier = transmute(Key_Modifiers)mods,
-		action   = transmute(Key_Action)action,
+	key := Input_Key {
+		code     = transmute(Input_Key_Code)key_code,
+		modifier = transmute(Input_Key_Modifiers)mods,
+		action   = transmute(Input_Key_Action)action,
 	}
 	// core.topic_info(.Input, key.code, key.action)
 	if input_ctx.current_map != nil && key in input_ctx.current_map.binds {
@@ -196,25 +196,25 @@ input_callback :: proc(key_code, action, mods: i32) { 	// TODO: Change this to a
 }
 
 @(private)
-bind_key_global :: proc(key: Key, func: proc()) {
+bind_key_global :: proc(key: Input_Key, func: proc()) {
 	input_ctx.global_map.binds[key] = func
 }
 
 @(private)
-bind_toggle_global :: proc(key: Key, first: proc(), second: proc()) {
-	toggle := Toggle{first, second}
+bind_toggle_global :: proc(key: Input_Key, first: proc(), second: proc()) {
+	toggle := Input_Toggle{first, second}
 	input_ctx.global_map.toggles[key] = toggle
 	bind_key(key, first)
 }
 
 @(private)
-bind_key_ctx :: proc(ctx: ^Mapping_Context, key: Key, func: proc()) {
+bind_key_ctx :: proc(ctx: ^Mapping_Context, key: Input_Key, func: proc()) {
 	ctx.binds[key] = func
 }
 
 @(private)
-bind_toggle_ctx :: proc(ctx: ^Mapping_Context, key: Key, first: proc(), second: proc()) {
-	toggle := Toggle{first, second}
+bind_toggle_ctx :: proc(ctx: ^Mapping_Context, key: Input_Key, first: proc(), second: proc()) {
+	toggle := Input_Toggle{first, second}
 	ctx.toggles[key] = toggle
 	bind_key_ctx(ctx, key, first)
 }

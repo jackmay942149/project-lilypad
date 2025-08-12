@@ -8,6 +8,7 @@ Material :: struct {
 	texture_ids:    [2]u32,
 }
 
+@(require_results)
 material_load :: proc(vert_filepath, frag_filepath: string) -> (shader_id: u32) {
 	ok: bool
 	shader_id, ok = gl.load_shaders_file(vert_filepath, frag_filepath)

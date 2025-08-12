@@ -1,6 +1,6 @@
 package engine
 
-Application_Info :: struct {
+Application :: struct {
 	name            : cstring,
 	width           : i32,
 	height          : i32,

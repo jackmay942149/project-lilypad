@@ -12,13 +12,8 @@ Mesh :: struct {
 	material:   Material,
 }
 
-Vertex :: struct {
-	position: [3]f32,
-	color   : [4]f32,
-	coords  : [2]f32,
-}
-
-load_mesh :: proc(mesh_filepath: cstring) -> (mesh: Mesh) {
+@(require_results)
+mesh_load :: proc(mesh_filepath: cstring) -> (mesh: Mesh) {
 	opts := fbx.Load_Opts{}
   err := fbx.Error{}
   scene := fbx.load_file(mesh_filepath, &opts, &err)
@@ -63,7 +58,7 @@ load_mesh :: proc(mesh_filepath: cstring) -> (mesh: Mesh) {
   return mesh
 }
 
-register_mesh :: proc(mesh: ^Mesh, streamed := false) {
+mesh_register :: proc(mesh: ^Mesh, streamed := false) {
 	assert(mesh != nil)
 	if mesh.registered {
 		return

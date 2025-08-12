@@ -27,7 +27,7 @@ Logger_Context :: struct {
 logger_ctx: Logger_Context
 
 @(require_results)
-init_logger :: proc(
+logger_init :: proc(
 	user := Logger_User.All,
 	topic := Logger_Topic.All,
 	file: string = "",

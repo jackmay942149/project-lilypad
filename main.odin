@@ -3,7 +3,7 @@ package main
 import "./engine"
 import "./scripts"
 
-app_info :: engine.Application_Info {
+app_info :: engine.Application {
 	name = "Project Lilypad",
 	width = 1600,
 	height = 900,
@@ -21,7 +21,7 @@ boat_mesh := engine.Mesh {
 	indicies = {0, 1, 2}
 }
 ocean_mesh := engine.ocean
-hex_mesh := engine.load_mesh("./assets/models/SM_HexGrid_01.fbx")
+hex_mesh := engine.mesh_load("./assets/models/SM_HexGrid_01.fbx")
 
 // Entities
 boat := engine.Entity {
@@ -35,39 +35,40 @@ ocean := engine.Entity {
 	mesh = &ocean_mesh,
 	tag = .Ocean,
 	update = scripts.ocean_update,
-
-	moss_regrow_rate = 0.0005,
-	moss_removal_distance = 0.05,
 }
 
 main :: proc() {
-	context.logger = engine.init_logger(.Jack, .All)	
-	tracking_allocator, allocator := engine.init_tracker()
+	context.logger = engine.logger_init(.Jack, .All)	
+	tracking_allocator, allocator := engine.tracker_init()
 	context.allocator = allocator
 	defer {
-		engine.assert_tracker_empty(tracking_allocator)
-		engine.destroy_tracker(tracking_allocator)
+		engine.tracker_assert_empty(tracking_allocator)
+		engine.tracker_destroy(tracking_allocator)
 	}
 
-	window := engine.init_window(app_info)
+	window := engine.window_init(app_info)
 	engine.input_init(window.handle)
 
-	engine.register_mesh(&boat_mesh)
-	engine.register_mesh(&ocean_mesh)
+	// Register Meshes
+	engine.mesh_register(&boat_mesh)
+	engine.mesh_register(&ocean_mesh)
 
+	// Setup Scene
 	scene := engine.Scene {
 		entities = {ocean, boat},
 	}
 
+	// Load Shaders
 	ocean.mesh.material.shader_program = engine.material_load("./assets/shaders/default.vert", "./assets/shaders/ocean.frag")
 	boat.mesh.material.shader_program = engine.material_load("./assets/shaders/default.vert", "./assets/shaders/boat.frag")
 
+	// Set Textures
 	ocean.mesh.material.texture_ids.x = engine.texture_load("./assets/textures/moss/DIFF_MossColour01.JPG",  1, ocean.mesh.material.shader_program)
 	ocean.mesh.material.texture_ids.y = engine.texture_load("./assets/textures/water/MASK_Water_02.JPG",  0, ocean.mesh.material.shader_program)
 
 	for !engine.window_should_close(window) {
-		engine.render(window, scene)
-		engine.update_components(&scene)
+		engine.window_render(window, scene)
+		engine.scene_update_entities(&scene)
 	}
 
 }
