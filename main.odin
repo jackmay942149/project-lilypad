@@ -30,6 +30,7 @@ boat := engine.Entity {
 	mesh = &boat_mesh,
 	tag = .Boat,
 	update = scripts.boat_update,
+	collision_radius = 0.1,
 }
 ocean := engine.Entity {
 	position = {0.0, 0.0},
@@ -41,6 +42,8 @@ lilypad := engine.Entity {
 	position = {0.0, 0.5},
 	mesh = &lilypad_mesh,
 	tag = .Lilypad,
+	collision_radius = 0.1,
+	collision_during = scripts.lilypad_collision_during,
 }
 
 main :: proc() {
@@ -74,9 +77,10 @@ main :: proc() {
 	ocean.mesh.material.texture_ids.x = engine.texture_load("./assets/textures/moss/DIFF_MossColour01.JPG",  1, ocean.mesh.material.shader_program)
 	ocean.mesh.material.texture_ids.y = engine.texture_load("./assets/textures/water/MASK_Water_02.JPG",  0, ocean.mesh.material.shader_program)
 
-	for !engine.window_should_close(window) {
-		engine.window_render(window, scene)
+	for !engine.window_should_close(&window) {
+		engine.window_render(&window, &scene)
 		engine.scene_update_entities(&scene)
+		engine.physics_update(&scene)
 	}
 }
 

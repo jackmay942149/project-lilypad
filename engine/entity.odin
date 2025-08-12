@@ -6,7 +6,7 @@ Entity :: struct {
 	position:         [2]f32,
 	mesh:             ^Mesh,
 	tag:              Entity_Tag,
-	collision_radius: u32,
+	collision_radius: f32,
 	update:           proc(^Scene, ^Entity),
 	collision_start:  proc(^Entity, ^Entity),
 	collision_during: proc(^Entity, ^Entity),

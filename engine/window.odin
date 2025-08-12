@@ -21,13 +21,14 @@ window_init :: proc(app_info: Application) -> (window: Window) {
 	}
 
 	glfw.MakeContextCurrent(window.handle)
+	glfw.SwapInterval(1)
 	gl.load_up_to(app_info.gl_major_version, app_info.gl_minor_version, glfw.gl_set_proc_address)
 
 	return window
 }
 
 @(private = "file") escape_key :: Input_Key{.Escape, {}, .Press}
-window_should_close :: proc(window: Window) -> (should_close: bool) {
+window_should_close :: proc(window: ^Window) -> (should_close: bool) {
 	should_close = bool(glfw.WindowShouldClose(window.handle))
 	if is_key_down(escape_key) {
 		should_close = true
@@ -35,7 +36,7 @@ window_should_close :: proc(window: Window) -> (should_close: bool) {
 	return should_close
 }
 
-window_render :: proc(window: Window, scene: Scene) {
+window_render :: proc(window: ^Window, scene: ^Scene) {
 	glfw.PollEvents()
 	gl.ClearColor(0.5, 0.0, 1.0, 1.0)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
