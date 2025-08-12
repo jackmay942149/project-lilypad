@@ -22,6 +22,7 @@ boat_mesh := engine.Mesh {
 }
 ocean_mesh := engine.ocean
 hex_mesh := engine.mesh_load("./assets/models/SM_HexGrid_01.fbx")
+lilypad_mesh := engine.mesh_load("./assets/models/SM_Lilypad_LowPoly01.fbx")
 
 // Entities
 boat := engine.Entity {
@@ -35,6 +36,11 @@ ocean := engine.Entity {
 	mesh = &ocean_mesh,
 	tag = .Ocean,
 	update = scripts.ocean_update,
+}
+lilypad := engine.Entity {
+	position = {0.0, 0.5},
+	mesh = &lilypad_mesh,
+	tag = .Lilypad,
 }
 
 main :: proc() {
@@ -51,16 +57,18 @@ main :: proc() {
 
 	// Register Meshes
 	engine.mesh_register(&boat_mesh)
-	engine.mesh_register(&ocean_mesh)
+	engine.mesh_register(&ocean_mesh, true)
+	engine.mesh_register(&lilypad_mesh)
 
 	// Setup Scene
 	scene := engine.Scene {
-		entities = {ocean, boat},
+		entities = {ocean, boat, lilypad},
 	}
 
 	// Load Shaders
 	ocean.mesh.material.shader_program = engine.material_load("./assets/shaders/default.vert", "./assets/shaders/ocean.frag")
 	boat.mesh.material.shader_program = engine.material_load("./assets/shaders/default.vert", "./assets/shaders/boat.frag")
+	lilypad.mesh.material.shader_program = engine.material_load("./assets/shaders/default.vert", "./assets/shaders/boat.frag")
 
 	// Set Textures
 	ocean.mesh.material.texture_ids.x = engine.texture_load("./assets/textures/moss/DIFF_MossColour01.JPG",  1, ocean.mesh.material.shader_program)
@@ -70,5 +78,6 @@ main :: proc() {
 		engine.window_render(window, scene)
 		engine.scene_update_entities(&scene)
 	}
-
 }
+
+

@@ -56,6 +56,7 @@ window_render :: proc(window: Window, scene: Scene) {
 		}
 
 		if e.mesh.streamed {
+			gl.BindBuffer(gl.ARRAY_BUFFER, e.mesh.material.vbo)
 			gl.BufferSubData(gl.ARRAY_BUFFER, 0, size_of(Vertex) * len(e.mesh.vertices), raw_data(e.mesh.vertices[:]))
 		}
 		gl.DrawElements(gl.TRIANGLES, i32(len(e.mesh.indicies)), gl.UNSIGNED_INT, nil)

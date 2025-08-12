@@ -9,7 +9,11 @@ import "../engine"
 
 @(private = "file") speed :: 0.01
 
+@(private) boat_position : [2]f32
+
 boat_update :: proc(scene: ^engine.Scene, boat: ^engine.Entity) {
+	boat_position = boat.position
+	
 	if engine.is_key_down(key_up) {
 		boat.position.y += speed
 	}

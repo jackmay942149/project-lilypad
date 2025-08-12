@@ -5,6 +5,7 @@ import gl "vendor:OpenGL"
 Material :: struct {
 	shader_program: u32,
 	vao:            u32,
+	vbo:            u32,
 	texture_ids:    [2]u32,
 }
 

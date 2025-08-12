@@ -49,7 +49,7 @@ mesh_load :: proc(mesh_filepath: cstring) -> (mesh: Mesh) {
   for i in 0..< vertex_count {
     pos := fbx_mesh.vertex_position.values.data[fbx_mesh.vertex_position.indices.data[i]]
     positions[i] = {f32(pos.x)/10.0, f32(pos.z)/10.0, f32(pos.y)/10.0}
-    mesh.vertices[i] = Vertex{position = positions[i], color = {1.0, 1.0, 1.0, 1.0}}
+    mesh.vertices[i] = Vertex{position = positions[i], color = {1.0, 0.0, 1.0, 1.0}}
   }
 
   // Free the fbx data
@@ -64,17 +64,17 @@ mesh_register :: proc(mesh: ^Mesh, streamed := false) {
 		return
 	}
 
-	vbo, ebo: u32 
+	ebo: u32 
 	gl.GenVertexArrays(1, &mesh.material.vao)
-	gl.GenBuffers(1, &vbo)
+	gl.GenBuffers(1, &mesh.material.vbo)
 	gl.GenBuffers(1, &ebo)
 	gl.BindVertexArray(mesh.material.vao)
 
 	if (!streamed) {
-		gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
+		gl.BindBuffer(gl.ARRAY_BUFFER, mesh.material.vbo)
 		gl.BufferData(gl.ARRAY_BUFFER, size_of(Vertex) * len(mesh.vertices), raw_data(mesh.vertices), gl.DYNAMIC_DRAW)
 	} else {
-		gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
+		gl.BindBuffer(gl.ARRAY_BUFFER, mesh.material.vbo)
 		gl.BufferData(gl.ARRAY_BUFFER, size_of(Vertex) * len(mesh.vertices), raw_data(mesh.vertices), gl.DYNAMIC_DRAW)
 	}
 
