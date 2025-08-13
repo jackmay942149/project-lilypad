@@ -63,6 +63,11 @@ main :: proc() {
 	engine.mesh_register(&ocean_mesh, true)
 	engine.mesh_register(&lilypad_mesh)
 
+	// Get uids TODO: Make a register entity func
+	boat.id = engine.scene_get_uid()
+	ocean.id = engine.scene_get_uid()
+	lilypad.id = engine.scene_get_uid()
+
 	// Setup Scene
 	scene := engine.Scene {
 		entities = {ocean, boat, lilypad},

@@ -3,6 +3,7 @@ package engine
 import "vendor:glfw"
 
 Entity :: struct {
+	id:               int,
 	position:         [2]f32,
 	mesh:             ^Mesh,
 	tag:              Entity_Tag,

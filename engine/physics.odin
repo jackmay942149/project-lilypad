@@ -2,6 +2,11 @@ package engine
 
 import la "core:math/linalg"
 
+@(private = "file")
+Collision :: struct {
+	entities: [2]^Entity,
+}
+
 physics_update :: proc(scene: ^Scene) {
 	for &e in scene.entities {
 		if e.collision_radius == 0 {

@@ -99,3 +99,19 @@ topic_warn :: proc(topic: Logger_Topic, args: ..any, location := #caller_locatio
 	log.warn(..to_log)
 }
 
+@(disabled = RELEASE)
+topic_fatal :: proc(topic: Logger_Topic, args: ..any, location := #caller_location) {
+	if logger_ctx.topic != .All && topic != logger_ctx.topic && topic != .All {
+		return
+	}
+	to_log:= make([]any, len(..args) + 2)
+	defer delete(to_log)
+	to_log[0] = topic
+	to_log[1] = location
+	for a, i in 0..<len(..args) {
+		to_log[2+i] = args[i]
+	}
+	log.error(..to_log)
+	assert(false)
+}
+
