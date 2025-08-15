@@ -13,6 +13,10 @@
 - Make scalable
 - Window Adjustments
 
+### Day 2 - 15/08/2025
+- Uploaded to git
+- Added WASD rotation
+
 ### Day 1 - 14/08/2025
 - Made a fbx viewer that just shows the mesh in wired mode
 - Made app icon
