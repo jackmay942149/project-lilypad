@@ -28,6 +28,9 @@
 - Delete hex grid 2 model
 - Setup new hex grid setup
 
+### Day 2 - 15/08/2025
+- Worked on Birdbox
+
 ### Day 1 - 14/08/2025
 - Added unique entity id genetation
 
