@@ -6,6 +6,7 @@ Entity :: struct {
 	id:               int,
 	position:         [2]f32,
 	mesh:             ^Mesh,
+	material:         Material,
 	tag:              Entity_Tag,
 	collision_radius: f32,
 	update:           proc(^Scene, ^Entity),
@@ -18,5 +19,6 @@ Entity_Tag :: enum {
 	Boat,
 	Ocean,
 	Lilypad,
+	Hex,
 }
 

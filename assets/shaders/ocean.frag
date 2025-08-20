@@ -10,5 +10,9 @@ uniform sampler2D u_texture_2;
 
 void main()
 {
-    o_color = texture(u_texture_1, v_coord)*v_color + texture(u_texture_2, v_coord)*(1-v_color);
+    if (v_color.x > 0.5f) {
+        o_color = texture(u_texture_1, v_coord);
+    } else {
+        o_color = texture(u_texture_2, v_coord);
+    }
 }

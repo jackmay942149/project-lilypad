@@ -42,22 +42,22 @@ window_render :: proc(window: ^Window, scene: ^Scene) {
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 
 	for e in scene.entities {
-		gl.UseProgram(e.mesh.material.shader_program)
-		gl.BindVertexArray(e.mesh.material.vao)
+		gl.UseProgram(e.material.shader_program)
+		gl.BindVertexArray(e.material.vao)
 		// Set 2D position
-		pos_location := gl.GetUniformLocation(e.mesh.material.shader_program, "u_pos")
+		pos_location := gl.GetUniformLocation(e.material.shader_program, "u_pos")
 		gl.Uniform2f(pos_location, e.position.x, e.position.y)
 
 		// Set texture
-		if e.mesh.material.texture_ids[0] != 0 {
+		if e.material.texture_ids[0] != 0 {
 			gl.ActiveTexture(gl.TEXTURE0)
-			gl.BindTexture(gl.TEXTURE_2D, e.mesh.material.texture_ids.x)		
+			gl.BindTexture(gl.TEXTURE_2D, e.material.texture_ids.x)		
 			gl.ActiveTexture(gl.TEXTURE1)
-			gl.BindTexture(gl.TEXTURE_2D, e.mesh.material.texture_ids.y)		
+			gl.BindTexture(gl.TEXTURE_2D, e.material.texture_ids.y)		
 		}
 
 		if e.mesh.streamed {
-			gl.BindBuffer(gl.ARRAY_BUFFER, e.mesh.material.vbo)
+			gl.BindBuffer(gl.ARRAY_BUFFER, e.material.vbo)
 			gl.BufferSubData(gl.ARRAY_BUFFER, 0, size_of(Vertex) * len(e.mesh.vertices), raw_data(e.mesh.vertices[:]))
 		}
 		gl.DrawElements(gl.TRIANGLES, i32(len(e.mesh.indicies)), gl.UNSIGNED_INT, nil)
