@@ -1,11 +1,17 @@
 package main
 
-main :: proc() {
-	window_init(800, 680, "Vulkan")
+import "engine"
+import "core:log"
 
-	for !window_should_close() {
-		window_update()
+main :: proc() {
+	context.logger = log.create_console_logger()
+	engine.init_window(800, 680, "Project Lilypad", .OpenGL)
+
+	mesh := engine.register_mesh()
+
+	for !engine.should_close_window() {
+		engine.update_window(&mesh)
 	}
 
-	window_destroy()
+	engine.destroy_window()
 }
