@@ -9,7 +9,7 @@ main :: proc() {
 
 	mesh := engine.register_mesh("../engine/models/boat.fbx")
 	entity := engine.Entity {
-		position = {0, 0, 0},
+		position = {0, 0, 40},
 		mesh = &mesh,
 	}
 
