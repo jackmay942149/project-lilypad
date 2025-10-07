@@ -20,6 +20,11 @@
 - Add engine inspector
 - Add engine heirarchy
 - Add wireframe mode / shader
+- Register uniform to engine 
+
+## Day 4 - 07/10/2025
+- Added height shader example
+- Added fog shader example
 
 ## Day 3 - 05/10/2025
 - Added normal imports and normal shader
@@ -30,4 +35,3 @@
 ## Day 1 - 01/10/2025
 - Added texture loading at comptime
 - Added model loading at comptime
-+o

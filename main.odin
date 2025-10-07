@@ -13,7 +13,7 @@ main :: proc() {
 
 	boat_mesh := carton.register_mesh(boat)
 	hex_mesh := carton.register_mesh(hex)
-	shader := carton.register_shader("assets/shaders/default.vert", "assets/shaders/normal.frag")
+	shader := carton.register_shader("assets/shaders/default.vert", "assets/shaders/depth.frag")
 	texture := carton.register_texture(moss)
 
 
