@@ -11,16 +11,22 @@
 - Add free camera movement
 - Add camera zoom
 - Add camera target switch
-- Add scripting system
 - Add editor or game builds
 - Add scene making system
-- Add input interface
 - Work on moss shader
 - Add sound interface
 - Add engine inspector
 - Add engine heirarchy
 - Add wireframe mode / shader
 - Register uniform to engine 
+- Improve mouse position input
+- Writeup hex spawning system
+- Writeup boat movement system
+
+## Day 5 - 10/10/2025
+- Added Object Scripting
+- Added Camera Rotation Order
+- Fixed the game camera
 
 ## Day 4 - 07/10/2025
 - Added height shader example

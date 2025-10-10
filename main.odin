@@ -1,7 +1,8 @@
 package main
 
-import log    "core:log"
-import carton "../the-carton"
+import log     "core:log"
+import carton  "../the-carton"
+import scripts " ./scripts"
 
 boat := #load("assets/models/SM_Boat02.fbx")
 hex := #load("assets/models/SM_HexGrid_01.fbx")
@@ -12,28 +13,45 @@ main :: proc() {
 	carton.init_window(1600, 900, "Project Lilypad", .OpenGL)
 
 	boat_mesh := carton.register_mesh(boat)
-	hex_mesh := carton.register_mesh(hex)
-	shader := carton.register_shader("assets/shaders/default.vert", "assets/shaders/depth.frag")
-	texture := carton.register_texture(moss)
+	hex_mesh_1 := carton.register_mesh(hex)
+	hex_mesh_2 := carton.register_mesh(hex)
 
+	boat_shader := carton.register_shader("assets/shaders/default.vert", "assets/shaders/default.frag")
+	boat_texture := carton.register_texture(moss)
 
-	carton.attach_shader_to_material(&boat_mesh.material, shader)
-	carton.attach_texture_to_material(&boat_mesh.material, texture)
-	carton.attach_shader_to_material(&hex_mesh.material, shader)
-	carton.attach_texture_to_material(&hex_mesh.material, texture)
+	hex_shader := carton.register_shader("assets/shaders/default.vert", "assets/shaders/vertex-colour.frag")
+
+	carton.attach_shader_to_material(&boat_mesh.material, boat_shader)
+	carton.attach_texture_to_material(&boat_mesh.material, boat_texture)
+	carton.attach_shader_to_material(&hex_mesh_1.material, hex_shader)
+	carton.attach_shader_to_material(&hex_mesh_2.material, hex_shader)
 	
 	entity := carton.Entity {
 		position = {0, 0, 0},
 		mesh = &boat_mesh,
+		update = scripts.boat_update,
 	}
 
 	hex_entity := carton.Entity {
 		position = {0, -2, 0},
-		mesh = &hex_mesh,
+		mesh = &hex_mesh_1,
+		update = scripts.water_tile_update,
 	}
 	hex_entity_2 := carton.Entity {
 		position = {2*7.5, -2, 8.66},
-		mesh = &hex_mesh,
+		mesh = &hex_mesh_2,
+		update = scripts.water_tile_update,
+	}
+	hex_entity_3 := carton.Entity {
+		position = {0, -2, 8.66*2},
+		mesh = &hex_mesh_2,
+
+	}
+
+	cam := carton.Camera {
+		position = {0, 0, -200},
+		look_at_rotator = {80, 90, 0},
+		rotation_order = .YXZ,
 	}
 
 	scene := carton.Scene {
@@ -41,7 +59,9 @@ main :: proc() {
 			entity,
 			hex_entity,
 			hex_entity_2,
-		}
+			hex_entity_3,
+		},
+		camera = cam,
 	}
 
 	for !carton.should_close_window() {
