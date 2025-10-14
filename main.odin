@@ -10,6 +10,10 @@ moss := #load("assets/textures/debug/uv.jpg")
 
 main :: proc() {
 	context.logger = log.create_console_logger()
+
+	carton.update_label("./labels/camera.label", "./sheet-ids/auth.key")
+	camera_label := carton.load_label("./labels/camera.label")
+	
 	carton.init_window(1600, 900, "Project Lilypad", .OpenGL)
 
 	boat_mesh := carton.register_mesh(boat)
@@ -48,9 +52,18 @@ main :: proc() {
 
 	}
 
+	camera_zoom, found := carton.get_label_value_int("zoom", camera_label)
+	if found {
+		log.info(camera_zoom)
+	}
+	camera_angle: int
+	camera_angle, found = carton.get_label_value_int("angle", camera_label)
+	if found {
+		log.info(camera_zoom)
+	}
 	cam := carton.Camera {
-		position = {0, 0, -200},
-		look_at_rotator = {80, 90, 0},
+		position = {0, 0, f32(-camera_zoom)},
+		look_at_rotator = {f32(camera_angle), 90, 0},
 		rotation_order = .YXZ,
 	}
 
